@@ -46,7 +46,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   bool _isFirstLoad = true;
   bool _isError = false;
   bool _isServerError = false;
-  String _currentUrl = "https://flutter.dev";
+  String _currentUrl = "https://getrestt.com";
   late final FirebaseMessaging _messaging;
   String? _fcmToken;
 
@@ -183,7 +183,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             children: [
               if (!_isError && !_isServerError)
               InAppWebView(
-                initialUrlRequest: URLRequest(url: Uri.parse("https://flutter.dev")),
+                initialUrlRequest: URLRequest(url: Uri.parse("https://getrestt.com")),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
                     javaScriptEnabled: true,
