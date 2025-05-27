@@ -181,8 +181,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
         body: Stack(
           children: [
             SafeArea(
-              if (!_isError && !_isServerError)
-              child: InAppWebView(
+              child: (!_isError && !_isServerError) 
+              ? InAppWebView(
                 initialUrlRequest: URLRequest(url: Uri.parse("https://getrestt.com")),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
@@ -255,7 +255,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     _isError = true;
                   });
                 }, 
-              ),
+              )
+              : const SizedBox.shrink(),
             ),
               if (_isFirstLoad && _isLoading)
                 Center(
