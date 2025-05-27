@@ -247,12 +247,19 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     _progress = progress / 100;
                   });
                 },
-                onReceivedError: (controller, request, error) {
-                  print('Error: ${error.description}');
+
+                onLoadError: (controller, url, code, message) {
+                  print('Load error ($code): $message');
                   setState(() {
                     _isError = true;
                   });
                 },
+                onLoadHttpError: (controller, url, statusCode, description) {
+                  print('HTTP error ($statusCode): $description');
+                  setState(() {
+                    _isError = true;
+                  });
+                }, 
               ),
 
               if (_isFirstLoad && _isLoading)
