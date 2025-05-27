@@ -187,7 +187,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             children: [
               if (!_isError && !_isServerError)
                 InAppWebView(
-                  initialUrlRequest: URLRequest(url: WebUri("https://flutter.dev")),
+                  initialUrlRequest: URLRequest(url: Uri.parse("https://flutter.dev")),
                   initialSettings: InAppWebViewSettings(
                     javaScriptEnabled: true,
                     useShouldOverrideUrlLoading: true,
@@ -315,7 +315,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       _isServerError = false;
       _isLoading = true;
     });
-    _controller?.loadUrl(urlRequest: URLRequest(url: WebUri(_currentUrl)));
+    _controller?.loadUrl(urlRequest: URLRequest(url: Uri.parse(_currentUrl)));
   }
 
   void _reloadPage() {
