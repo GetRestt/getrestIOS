@@ -182,76 +182,79 @@ class _WebViewScreenState extends State<WebViewScreen> {
           child: Stack(
             children: [
               if (!_isError && !_isServerError)
-                InAppWebView(
-                  initialUrlRequest: URLRequest(url: Uri.parse("https://flutter.dev")),
-                  initialSettings: InAppWebViewSettings(
+              InAppWebView(
+                initialUrlRequest: URLRequest(url: Uri.parse("https://flutter.dev")),
+                initialOptions: InAppWebViewGroupOptions(
+                  crossPlatform: InAppWebViewOptions(
                     javaScriptEnabled: true,
                     useShouldOverrideUrlLoading: true,
                     mediaPlaybackRequiresUserGesture: false,
                   ),
-                  onWebViewCreated: (controller) {
-                    print('WebView created');
-                    _controller = controller;
-                    controller.addJavaScriptHandler(
-                      handlerName: 'userLoggedIn',
-                      callback: (args) {
-                        final userId = args[0]['user_id'];
-                          if (_fcmToken != null) {
-                            _sendFcmTokenToLaravel(_fcmToken, userId);
-                          }
-                      },
-                    );
-                  },
-                  onLoadStart: (controller, url) {
-                    print('Load started: $url');
-                    if (url != null) {
-                      setState(() {
-                        _isLoading = true;
-                        _progress = 0.1;
-                        _isServerError = false;
-                        _currentUrl = url.toString();
-                      });
-                    }
-                  },
-                  onLoadStop: (controller, url) async {
-                    print('Load finished: $url');
-                    if (url != null) {
-                      setState(() {
-                        _isLoading = false;
-                        _progress = 1.0;
-                        _currentUrl = url.toString();
-                      });
-                      await _saveCurrentUrl(_currentUrl);
-                      
-                      if (_isFirstLoad) {
-                        setState(() => _isFirstLoad = false);
-                      }
-
-                      String? bodyText = await controller.evaluateJavascript(
-                        source: "document.body.innerText",
-                      );
-
-                      if (bodyText != null &&
-                          (bodyText.contains("500 Internal Server Error") ||
-                              bodyText.contains("Server Error in '/' Application."))) {
-                        setState(() {
-                          _isServerError = true;
-                        });
-                      }
-                    }
-                  },
-                  onProgressChanged: (controller, progress) {
-                    setState(() {
-                      _progress = progress / 100;
-                    });
-                  },
-                  onReceivedError: (controller, request, error) {
-                    print('Error: ${error.description}');
-                    setState(() {
-                      _isError = true;
-                    });
-                  },
                 ),
+                onWebViewCreated: (controller) {
+                  print('WebView created');
+                  _controller = controller;
+                  controller.addJavaScriptHandler(
+                    handlerName: 'userLoggedIn',
+                    callback: (args) {
+                      final userId = args[0]['user_id'];
+                      if (_fcmToken != null) {
+                        _sendFcmTokenToLaravel(_fcmToken, userId);
+                      }
+                    },
+                  );
+                },
+                onLoadStart: (controller, url) {
+                  print('Load started: $url');
+                  if (url != null) {
+                    setState(() {
+                      _isLoading = true;
+                      _progress = 0.1;
+                      _isServerError = false;
+                      _currentUrl = url.toString();
+                    });
+                  }
+                },
+                onLoadStop: (controller, url) async {
+                  print('Load finished: $url');
+                  if (url != null) {
+                    setState(() {
+                      _isLoading = false;
+                      _progress = 1.0;
+                      _currentUrl = url.toString();
+                    });
+                    await _saveCurrentUrl(_currentUrl);
+              
+                    if (_isFirstLoad) {
+                      setState(() => _isFirstLoad = false);
+                    }
+              
+                    String? bodyText = await controller.evaluateJavascript(
+                      source: "document.body.innerText",
+                    );
+              
+                    if (bodyText != null &&
+                        (bodyText.contains("500 Internal Server Error") ||
+                            bodyText.contains("Server Error in '/' Application."))) {
+                      setState(() {
+                        _isServerError = true;
+                      });
+                    }
+                  }
+                },
+                onProgressChanged: (controller, progress) {
+                  setState(() {
+                    _progress = progress / 100;
+                  });
+                },
+                onReceivedError: (controller, request, error) {
+                  print('Error: ${error.description}');
+                  setState(() {
+                    _isError = true;
+                  });
+                },
+              ),
+
               if (_isFirstLoad && _isLoading)
                 Center(
                   child: CircularProgressIndicator(
