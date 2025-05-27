@@ -192,7 +192,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   ),
                 ),
                 onWebViewCreated: (controller) {
-                  print('WebView created');
                   _controller = controller;
                   controller.addJavaScriptHandler(
                     handlerName: 'userLoggedIn',
@@ -205,7 +204,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   );
                 },
                 onLoadStart: (controller, url) {
-                  print('Load started: $url');
                   if (url != null) {
                     setState(() {
                       _isLoading = true;
@@ -216,7 +214,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   }
                 },
                 onLoadStop: (controller, url) async {
-                  print('Load finished: $url');
                   if (url != null) {
                     setState(() {
                       _isLoading = false;
@@ -249,13 +246,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 },
 
                 onLoadError: (controller, url, code, message) {
-                  print('Load error ($code): $message');
                   setState(() {
                     _isError = true;
                   });
                 },
                 onLoadHttpError: (controller, url, statusCode, description) {
-                  print('HTTP error ($statusCode): $description');
                   setState(() {
                     _isError = true;
                   });
