@@ -178,11 +178,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 )
               : const SizedBox(height: 4.0),
         ),
-        body: SafeArea(
-          child: Stack(
-            children: [
+        body: Stack(
+          children: [
+            SafeArea(
               if (!_isError && !_isServerError)
-              InAppWebView(
+              child: InAppWebView(
                 initialUrlRequest: URLRequest(url: Uri.parse("https://getrestt.com")),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
@@ -256,7 +256,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   });
                 }, 
               ),
-
+            ),
               if (_isFirstLoad && _isLoading)
                 Center(
                   child: CircularProgressIndicator(
@@ -270,8 +270,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 _buildErrorScreen("Please check your internet!", _reloadPage),
               if (_isServerError)
                 _buildErrorScreen("Server Error. Try again now!", _reloadCurrentUrl),
-            ],
-          ),
+            
+          ],
         ),
       ),
     );
