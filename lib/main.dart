@@ -54,7 +54,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   String? _fcmToken;
   String get mobileUserAgent {
     return Platform.isIOS
-        ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/537.36"
+        ? 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36')
         : "Mozilla/5.0 (Linux; Android 10; Mobile; rv:89.0) Gecko/89.0 Firefox/89.0";
   }
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
