@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
@@ -54,7 +55,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   String? _fcmToken;
   String get mobileUserAgent {
     return Platform.isIOS
-        ? "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+       ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/537.36"
         : "Mozilla/5.0 (Linux; Android 10; Mobile; rv:89.0) Gecko/89.0 Firefox/89.0";
   }
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -74,6 +75,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
       ..setUserAgent(mobileUserAgent)
       ..setNavigationDelegate(
         NavigationDelegate(
+           onNavigationRequest: (NavigationRequest request) async {
+          if (request.url.startsWith("kcbconsumer://")) {
+            // Launch custom scheme using url_launcher
+            if (await canLaunchUrl(Uri.parse(request.url))) {
+              await launchUrl(Uri.parse(request.url));
+            } else {
+              debugPrint('Cannot launch custom URL scheme');
+            }
+            return NavigationDecision.prevent; // Don't let WebView load it
+          }
+          return NavigationDecision.navigate;
+        },
           onPageStarted: (url) {
                         print(url);
             print("start url page start urlstart urlstart urlstart urlstart urlstart url");
