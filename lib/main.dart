@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -40,16 +41,22 @@ class WebViewScreen extends StatefulWidget {
 }
 
 class _WebViewScreenState extends State<WebViewScreen> {
-  InAppWebViewController? _controller;
+   late WebViewController _controller;
+  InAppWebViewController? _inAppWebViewController;
   double _progress = 0;
   bool _isLoading = true;
   bool _isFirstLoad = true;
   bool _isError = false;
   bool _isServerError = false;
   String _currentUrl = "https://getrestt.com";
+  bool _useFlutterWebView = false;
   late final FirebaseMessaging _messaging;
   String? _fcmToken;
-
+  String get mobileUserAgent {
+    return Platform.isIOS
+        ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/537.36"
+        : "Mozilla/5.0 (Linux; Android 10; Mobile; rv:89.0) Gecko/89.0 Firefox/89.0";
+  }
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -58,8 +65,73 @@ class _WebViewScreenState extends State<WebViewScreen> {
     super.initState();
     _loadLastUrl();
     _initFirebaseMessaging();
+    _initWebViewController();
   }
+  
+ void _initWebViewController() {
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent(mobileUserAgent)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (url) {
+            setState(() {
+              _isLoading = true;
+              _progress = 0.1;
+              _isError = false;
+              _isServerError = false;
+              _currentUrl = url;
+            });
+          },
+          onProgress: (progress) {
+            setState(() {
+              _progress = progress / 100;
+            });
+          },
+          onPageFinished: (url) async {
+            setState(() {
+              _isLoading = false;
+              _progress = 1.0;
+              _currentUrl = url;
+              _useFlutterWebView = _currentUrl
+                  .contains("https://getrestt.com/talent-registration/create");
+              if(_useFlutterWebView){
+                _inAppWebViewController?.loadUrl(urlRequest: URLRequest(url: Uri.parse(_currentUrl)));
+              }
 
+            });
+            await _saveCurrentUrl(url);
+            try {
+              String? bodyText = await _controller.runJavaScriptReturningResult(
+                "document.body.innerText",
+              ) as String?;
+
+              if (bodyText != null &&
+                  (bodyText.contains("500 Internal Server Error") ||
+                      bodyText.contains("Server Error in '/' Application."))) {
+                setState(() {
+                  _isServerError = true;
+                });
+              }
+            } catch (_) {}
+          },
+          onWebResourceError: (error) {
+            setState(() {
+              _isError = true;
+            });
+          },
+        ),
+      )
+      ..addJavaScriptChannel(
+        'userLoggedIn',
+        onMessageReceived: (JavaScriptMessage message) {
+          final data = jsonDecode(message.message);
+          final userId = data['user_id'];
+          _sendFcmTokenToLaravel(_fcmToken, userId);
+        },
+      )
+      ..loadRequest(Uri.parse(_currentUrl));
+  }
   void _sendFcmTokenToLaravel(String? token, int userId) async {
     if (token == null) return;
 
@@ -110,7 +182,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final notification = message.notification;
       if (notification != null) {
+        _useFlutterWebView=true;
+        _inAppWebViewController?.loadUrl(urlRequest: URLRequest(url: Uri.parse(_currentUrl)));
         _showLocalNotification(notification.title, notification.body);
+        _useFlutterWebView=false;
       }
     });
 
@@ -118,7 +193,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       final notification = message.notification;
       if (notification != null) {
+        _useFlutterWebView=true;
+        _inAppWebViewController?.loadUrl(urlRequest: URLRequest(url: Uri.parse(_currentUrl)));
         _showLocalNotification(notification.title, notification.body);
+        _useFlutterWebView=false;
       }
       // Optional: Add navigation or data handling here
     });
@@ -182,7 +260,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           children: [
             SafeArea(
               child: (!_isError && !_isServerError) 
-              ? InAppWebView(
+              ? _useFlutterWebView ? InAppWebView(
                 initialUrlRequest: URLRequest(url: Uri.parse("https://getrestt.com")),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
@@ -195,7 +273,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   ),
                 ),
                 onWebViewCreated: (controller) {
-                  _controller = controller;
+                  _inAppWebViewController = controller;
                   controller.addJavaScriptHandler(
                     handlerName: 'userLoggedIn',
                     callback: (args) {
@@ -258,7 +336,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     _isError = true;
                   });
                 }, 
-              )
+              ) : WebViewWidget(controller: _controller),
               : const SizedBox.shrink(),
             ),
               if (_isFirstLoad && _isLoading)
@@ -320,7 +398,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
       _isServerError = false;
       _isLoading = true;
     });
-    _controller?.loadUrl(urlRequest: URLRequest(url: Uri.parse(_currentUrl)));
+    _controller.loadRequest(Uri.parse(_currentUrl));
+    //_controller?.loadUrl(urlRequest: URLRequest(url: Uri.parse(_currentUrl)));
   }
 
   void _reloadPage() {
@@ -329,6 +408,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       _isServerError = false;
       _isLoading = true;
     });
-    _controller?.reload();
+    _controller.reload();
+    //_controller?.reload();
   }
 }
