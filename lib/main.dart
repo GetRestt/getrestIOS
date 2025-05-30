@@ -75,6 +75,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
+                        print(url);
+            print("start url page start urlstart urlstart urlstart urlstart urlstart url");
             setState(() {
               _isLoading = true;
               _progress = 0.1;
@@ -90,8 +92,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
           },
           onPageFinished: (url) async {
             final result = await _controller.runJavaScriptReturningResult('navigator.userAgent');
-            print(result);
-            print("Arona user Agent, user Agent, user Agent, user Agent, user Agent, user Agent");
+            print(url);
+            print("urlurlurlurl page finished url url url url");
             setState(() {
               _isLoading = false;
               _progress = 1.0;
@@ -120,6 +122,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
           },
           onWebResourceError: (error) {
             print(error);
+                print("Web resource error:");
+    print("Error code: ${error.errorCode}");
+    print("Description: ${error.description}");
+    print("Domain: ${error.domain}");
+    print("Type: ${error.errorType}");
+    print("Is for main frame: ${error.isForMainFrame}");
             print("Arona error erorr, error, error erorr,error erorr,");
             setState(() {
               _isError = true;
