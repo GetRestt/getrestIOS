@@ -260,7 +260,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           children: [
             SafeArea(
               child: (!_isError && !_isServerError) 
-              ? _useFlutterWebView ? InAppWebView(
+              ? (_useFlutterWebView ? InAppWebView(
                 initialUrlRequest: URLRequest(url: Uri.parse("https://getrestt.com")),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
@@ -336,7 +336,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     _isError = true;
                   });
                 }, 
-              ) : WebViewWidget(controller: _controller),
+              ) : WebViewWidget(controller: _controller) )
               : const SizedBox.shrink(),
             ),
               if (_isFirstLoad && _isLoading)
