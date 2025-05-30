@@ -125,9 +125,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 print("Web resource error:");
     print("Error code: ${error.errorCode}");
     print("Description: ${error.description}");
-    print("Domain: ${error.domain}");
-    print("Type: ${error.errorType}");
-    print("Is for main frame: ${error.isForMainFrame}");
             print("Arona error erorr, error, error erorr,error erorr,");
             setState(() {
               _isError = true;
