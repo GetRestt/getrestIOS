@@ -81,15 +81,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
             if (await canLaunchUrl(Uri.parse(request.url))) {
               await launchUrl(Uri.parse(request.url));
             } else {
-              debugPrint('Cannot launch custom URL scheme');
             }
             return NavigationDecision.prevent; // Don't let WebView load it
           }
           return NavigationDecision.navigate;
         },
           onPageStarted: (url) {
-                        print(url);
-            print("start url page start urlstart urlstart urlstart urlstart urlstart url");
             setState(() {
               _isLoading = true;
               _progress = 0.1;
@@ -105,8 +102,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
           },
           onPageFinished: (url) async {
             final result = await _controller.runJavaScriptReturningResult('navigator.userAgent');
-            print(url);
-            print("urlurlurlurl page finished url url url url");
             setState(() {
               _isLoading = false;
               _progress = 1.0;
@@ -134,11 +129,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
             } catch (_) {}
           },
           onWebResourceError: (error) {
-            print(error);
-                print("Web resource error:");
-    print("Error code: ${error.errorCode}");
-    print("Description: ${error.description}");
-            print("Arona error erorr, error, error erorr,error erorr,");
             setState(() {
               _isError = true;
             });
@@ -350,15 +340,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 },
 
                 onLoadError: (controller, url, code, message) {
-                  print("load error load error load error load error load error load error");
-                  print(url);
                   setState(() {
                     _isError = true;
                   });
                 },
                 onLoadHttpError: (controller, url, statusCode, description) {
-                  print("HTTP ERROR , HTTP ERROR ,HTTP ERROR ,HTTP ERROR ,HTTP ERROR ,");
-                  print(url);
                   setState(() {
                     _isError = true;
                   });
