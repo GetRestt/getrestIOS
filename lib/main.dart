@@ -237,9 +237,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
                           },
                         ),
                       );
+                      print("Josy on cancle policy");
                       return NavigationActionPolicy.CANCEL;
                     }
-
+                      print(url);
+                        print("on kcbconsumer");
                     if (url.startsWith("kcbconsumer://")) {
                       print(url);
                       print("Arona Arona Arona, Arona");
