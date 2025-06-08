@@ -262,6 +262,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       return NavigationActionPolicy.CANCEL;
                     }
 
+                    if (url.startsWith("kcbconsumer://")) {
+                      print("INSIDE 9999999999999999999999999999999999999999999");
+                      final uri = Uri.parse(url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri);
+                      }
+                      return NavigationActionPolicy.CANCEL;
+                    }
+
                     return NavigationActionPolicy.ALLOW;
                   },
                   onLoadStart: (controller, url) {
@@ -285,7 +294,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       if (await canLaunchUrl(url)) {
                         await launchUrl(url);
                       }
-                      return NavigationActionPolicy.CANCEL;
                     }
                       
                       setState(() {
