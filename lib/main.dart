@@ -226,6 +226,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     final url = navigationAction.request.url.toString();
 
                     if (url.startsWith("https://superapp.ethiomobilemoney.et")) {
+                      print(url);
+                      print("Josy");
                       await controller.loadUrl(
                         urlRequest: URLRequest(
                           url: Uri.parse(url),
@@ -239,6 +241,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     }
 
                     if (url.startsWith("kcbconsumer://")) {
+                      print(uri);
+                      print("Arona Arona Arona, Arona");
                       final uri = Uri.parse(url);
                       if (await canLaunchUrl(uri)) {
                         await launchUrl(uri);
