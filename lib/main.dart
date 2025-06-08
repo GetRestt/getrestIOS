@@ -238,23 +238,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       },
                     );
                   },
-                  shouldOverrideUrlLoading:
-                      (controller, navigationAction) async {
-                    final url = navigationAction.request.url.toString();
-
-
-
-                    if (url.startsWith("kcbconsumer://")) {
-                      print("INSIDE 9999999999999999999999999999999999999999999");
-                      final uri = Uri.parse(url);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
-                      }
-                      return NavigationActionPolicy.CANCEL;
-                    }
-
-                    return NavigationActionPolicy.ALLOW;
-                  },
                   onLoadStart: (controller, url) {
                     if (url != null) {
                       setState(() {
