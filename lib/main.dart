@@ -282,9 +282,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     if (url.toString().startsWith("kcbconsumer://")) {
                       print(url);
                       print("Arona Arona Arona, Arona");
-                      final uri = Uri.parse(url);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url);
                       }
                       return NavigationActionPolicy.CANCEL;
                     }
