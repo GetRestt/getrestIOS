@@ -279,7 +279,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     if (url != null) {
 
                     print("on kcbconsumer");
-                    if (url.startsWith("kcbconsumer://")) {
+                    if (url.toString().startsWith("kcbconsumer://")) {
                       print(url);
                       print("Arona Arona Arona, Arona");
                       final uri = Uri.parse(url);
