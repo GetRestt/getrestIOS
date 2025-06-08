@@ -56,6 +56,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   bool _isFirstLoad = true;
   bool _isError = false;
   bool _isServerError = false;
+  bool _hasLoadedSuperAppUrl = false;
   String _currentUrl = "https://getrestt.com/";
   late final FirebaseMessaging _messaging;
 
@@ -245,15 +246,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     if (url.startsWith("https://superapp.ethiomobilemoney.et")) {
                       print(url);
                       print("Josy");
-                      await controller.loadUrl(
-                        urlRequest: URLRequest(
-                          url: Uri.parse(url),
-                          headers: {
-                            'Referer': 'https://getrestt.com',
-                            'Origin': 'https://getrestt.com',
-                          },
-                        ),
-                      );
+                     if (!_hasLoadedSuperAppUrl) {
+                       _hasLoadedSuperAppUrl = true;
+                        await controller.loadUrl(
+                          urlRequest: URLRequest(
+                            url: Uri.parse(url),
+                            headers: {
+                              'Referer': 'https://getrestt.com',
+                              'Origin': 'https://getrestt.com',
+                            },
+                          ),
+                        );
+                       }
                       print("Josy on cancle policy");
                       return NavigationActionPolicy.CANCEL;
                     }
