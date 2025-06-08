@@ -9,11 +9,19 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    await Firebase.initializeApp();
+  }
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Firebase initialization
   await Firebase.initializeApp();
+
+  // Register background handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
@@ -119,6 +127,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
         _showLocalNotification(notification.title, notification.body);
       }
     });
+
+    // App opened from terminated or background via notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      if (notification != null) {
+        _showLocalNotification(notification.title, notification.body);
+      }
+    });
+
   }
 
   void _showLocalNotification(String? title, String? body) {
