@@ -242,22 +242,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       (controller, navigationAction) async {
                     final url = navigationAction.request.url.toString();
 
-                    if (url.startsWith("https://superapp.ethiomobilemoney.et")) {
-                      print(url);
-                      print("Josy");
-                      await controller.loadUrl(
-                        urlRequest: URLRequest(
-                          url: Uri.parse(url),
-                          headers: {
-                            'Referer': 'https://getrestt.com',
-                            'Origin': 'https://getrestt.com',
-                          },
-                        ),
-                      );
 
-                      print("Josy on cancle policy");
-                      return NavigationActionPolicy.ALLOW;
-                    }
 
                     if (url.startsWith("kcbconsumer://")) {
                       print("INSIDE 9999999999999999999999999999999999999999999");
