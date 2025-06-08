@@ -335,8 +335,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
               onPressed: onRetry,
               child: const Text("Try Again", style: TextStyle(fontSize: 18)),
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.blueGrey.shade900,
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.blueGrey.shade900,
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
