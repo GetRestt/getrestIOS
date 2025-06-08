@@ -261,17 +261,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       print("Josy on cancle policy");
                       return NavigationActionPolicy.CANCEL;
                     }
-                      print(url);
-                        print("on kcbconsumer");
-                    if (url.startsWith("kcbconsumer://")) {
-                      print(url);
-                      print("Arona Arona Arona, Arona");
-                      final uri = Uri.parse(url);
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
-                      }
-                      return NavigationActionPolicy.CANCEL;
-                    }
 
                     return NavigationActionPolicy.ALLOW;
                   },
@@ -286,7 +275,20 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     }
                   },
                   onLoadStop: (controller, url) async {
+                     print(url);
                     if (url != null) {
+
+                    print("on kcbconsumer");
+                    if (url.startsWith("kcbconsumer://")) {
+                      print(url);
+                      print("Arona Arona Arona, Arona");
+                      final uri = Uri.parse(url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri);
+                      }
+                      return NavigationActionPolicy.CANCEL;
+                    }
+                      
                       setState(() {
                         _isLoading = false;
                         _progress = 1.0;
