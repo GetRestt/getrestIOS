@@ -53,7 +53,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   InAppWebViewController? _controller;
   double _progress = 0;
   bool _isLoading = true;
-  bool _isFirstLoad = true;
+  final bool _isFirstLoad = true;
   bool _isError = false;
   bool _isServerError = false;
   String _currentUrl = "https://getrestt.com/";
@@ -80,7 +80,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void _sendFcmTokenToLaravel(String? token, int userId) async {
     if (token == null) return;
 
-    final response = await http.post(
+     await http.post(
       Uri.parse("https://getrestt.com/save-fcm-token"),
       headers: {
         'Content-Type': 'application/json',
@@ -236,12 +236,29 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       handlerName: 'userLoggedIn',
                       callback: (args) {
                         final userId = args[0]['user_id'];
-                        final name = args[0]['name'];
-                        final email = args[0]['email'];
-
                         _sendFcmTokenToLaravel(_fcmToken, userId);
                       },
                     );
+                  },
+                  shouldOverrideUrlLoading:
+                      (controller, navigationAction) async {
+                    final url = navigationAction.request.url.toString();
+
+                    if (url.startsWith("https://superapp.ethiomobilemoney.et")) {
+                      print(url);
+                      print("Josy");
+                    }
+
+                    if (url.startsWith("kcbconsumer://")) {
+                      print("INSIDE 9999999999999999999999999999999999999999999");
+                      final uri = Uri.parse(url);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri);
+                      }
+                      return NavigationActionPolicy.CANCEL;
+                    }
+
+                    return NavigationActionPolicy.ALLOW;
                   },
                   onLoadStart: (controller, url) {
                     print(url);
@@ -297,8 +314,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                   },
                   onLoadError: (controller, url, code, message) {
                     print("-------------ERROR -----------------");
-                    print("code");
-                    print("message");
+                    print(code);
+                    print(message);
                     if (code == -2 || code == -105) {
                       setState(() {
                         _isError = true;
