@@ -261,8 +261,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     return NavigationActionPolicy.ALLOW;
                   },
                   onLoadStart: (controller, url) {
-                    print(url);
-                     print("-------------Starting -----------------");
                     if (url != null) {
                       setState(() {
                         _isLoading = true;
@@ -273,18 +271,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     }
                   },
                   onLoadStop: (controller, url) async {
-                     print(url);
-                    if (url != null) {
-
-                    print("on kcbconsumer");
-                    if (url.toString().startsWith("kcbconsumer://")) {
-                      print(url);
-                      print("Arona Arona Arona, Arona");
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url);
-                      }
-                    }
-                      
+                    if (url != null) {        
                       setState(() {
                         _isLoading = false;
                         _progress = 1.0;
@@ -313,9 +300,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     });
                   },
                   onLoadError: (controller, url, code, message) {
-                    print("-------------ERROR -----------------");
-                    print(code);
-                    print(message);
                     if (code == -2 || code == -105) {
                       setState(() {
                         _isError = true;
