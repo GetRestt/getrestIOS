@@ -224,6 +224,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     android: AndroidInAppWebViewOptions(
                       useHybridComposition: true,
                     ),
+                    ios: IOSInAppWebViewOptions(
+                      allowsInlineMediaPlayback: true,
+                      allowsBackForwardNavigationGestures: true,
+                      sharedCookiesEnabled: true,
+                    ),
                   ),
                   onWebViewCreated: (controller) {
                     _controller = controller;
@@ -239,6 +244,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     );
                   },
                   onLoadStart: (controller, url) {
+                    print(url);
+                     print("-------------Starting -----------------");
                     if (url != null) {
                       setState(() {
                         _isLoading = true;
@@ -289,6 +296,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     });
                   },
                   onLoadError: (controller, url, code, message) {
+                    print("-------------ERROR -----------------");
+                    print("code");
+                    print("message");
                     if (code == -2 || code == -105) {
                       setState(() {
                         _isError = true;
